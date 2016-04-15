@@ -9,7 +9,6 @@ var CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
 var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 var Go = require('./go.js');
 
-
 var GO_ACTION = 'go-action';
 
 var DeployBot = function Constructor(settings) {
@@ -35,8 +34,10 @@ var DeployBot = function Constructor(settings) {
             var messages = go_action.split(/[ ]/);
             post(util.format("<@%s>: started - %s", message.user, go_action), message.channel);
             var go = new Go(settings.username, settings.password);
-            go.pause(messages[2], messages[1], function (status) {
-                post(util.format("<@%s>: %s", message.user, status), message.channel);
+            go.post(messages[2], messages[1], function (status) {
+                go.get(messages[2], 'history', function (details) {
+                    post(util.format("<@%s>: %s: details", message.user, status, details), message.channel);
+                });
             })
         }
     });
