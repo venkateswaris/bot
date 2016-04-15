@@ -7,13 +7,13 @@ var go = function Constructor(username, password) {
 
 go.prototype.pause = function (pipeline, action, callback) {
     var url = util.format('%s/%s/%s', this.baseUrl, pipeline, action);
-    var post = request.post(url, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
+    request.post(url, function (error, response, body) {
+        if (!error && response.statusCode >= 200 && response.statusCode < 400) {
             var status = util.format("%s %s - done", action, pipeline);
             callback(status);
         }
         else {
-            var message = util.format("%s %s - failed", action, pipeline);
+            var message = util.format("%s %s - failed: reason - %s", action, pipeline, response.body);
             callback(message);
         }
     });
