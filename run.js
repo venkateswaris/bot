@@ -1,6 +1,6 @@
 'use strict';
 
-var DeployBot = require('./app.js');
+var DeployBot = require('./bot.js');
 
 var bot = new DeployBot({
     token: process.argv[2],
