@@ -32,13 +32,20 @@ var DeployBot = function Constructor(settings) {
         if (message.text.indexOf(GO_ACTION) !== -1) {
             var go_action = message.text.match(/go-action[^]*/)[0];
             var messages = go_action.split(/[ ]/);
-            post(util.format("<@%s>: started - %s", message.user, go_action), message.channel);
-            var go = new Go(settings.username, settings.password);
-            go.post(messages[2], messages[1], function (status) {
-                go.get(messages[2], 'history', function (details) {
-                    post(util.format("<@%s>: %s: details", message.user, status, details), message.channel);
-                });
-            })
+            try {
+                post(util.format("<@%s>: started - %s", message.user, go_action), message.channel);
+                var go = new Go(settings.username, settings.password);
+                go.post(messages[2], messages[1], function (status) {
+                    go.get(messages[2], 'history', function (details) {
+                        post(util.format("<@%s>: %s: details", message.user, status, details), message.channel);
+                    });
+                }, function (details) {
+                    post(util.format("<@%s>: %s: details", message.user, details), message.channel)
+                })
+            }
+            catch (ex) {
+
+            }
         }
     });
 };
