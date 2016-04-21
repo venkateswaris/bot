@@ -34,17 +34,22 @@ var DeployBot = function Constructor(settings) {
             var messages = go_action.split(/[ ]/);
             try {
                 post(util.format("<@%s>: started - %s", message.user, go_action), message.channel);
-                var go = new Go(settings.username, settings.password);
-                go.post(messages[2], messages[1], function (status) {
+
+                var successCallback = function (status) {
                     go.get(messages[2], 'history', function (details) {
                         post(util.format("<@%s>: %s: details", message.user, status, details), message.channel);
                     });
-                }, function (details) {
+                };
+
+                var failureCallback = function (details) {
                     post(util.format("<@%s>: %s: details", message.user, details), message.channel)
-                })
+                };
+
+                var go = new Go(settings.username, settings.password);
+                go.post(messages[2], messages[1], successCallback, failureCallback)
             }
             catch (ex) {
-
+                post(util.format("<@%s>: %s: failed", message.user, go_action), message.channel)
             }
         }
     });
