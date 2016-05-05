@@ -10,8 +10,12 @@ function isSuccess(error, response) {
 }
 
 go.prototype.post = function (pipeline, action, success_callback, failure_callback) {
-    var url = util.format('%s/pipelines/%s/%s', this.baseUrl, pipeline, action);
-    request.post(url, function (error, response) {
+    var urlOptions = {
+        url: util.format('%s/pipelines/%s/%s', this.baseUrl, pipeline, action), headers: {
+            'Confirm': 'true'
+        }
+    };
+    request.post(urlOptions, function (error, response) {
         if (isSuccess(error, response)) {
             var status = util.format("%s %s - done", action, pipeline);
             success_callback(status);
